@@ -1,9 +1,9 @@
 # Template-publish fan-out worker: trade-offs
 
-When a template update is published, this worker flags every affected engagement as having a pending update. Checking an engagement directly is slow (about 1 minute) and runs on another team's limited servers, so most of the trade-offs below are about not overloading them.
+When a template update is published, this worker flags every affected engagement as pending an update. Checking an engagement directly is slow (about 1 minute) and runs on external servers, so most of the trade-offs below are about not overloading them.
 
-**1. Check the lookup table first, open files only as a last resort.**
-I decided from a small lookup table of "which engagement is on which version" and open an engagement only when that table can't answer. The result is saved, so the same engagement is never opened twice.
+**1. Check the lookup table first; open files only as a last resort.**
+I decided to use a small lookup table of "which engagement is on which version" and open an engagement only when that table can't answer. I save the result, so the same engagement is never opened twice.
 *Gain:* most updates need no slow calls at all. *Cost:* this assumes engagements only ever move forward to newer versions, never back.
 
 **2. A fixed limit on calls to the other team.**
